@@ -1,0 +1,7 @@
+﻿$primary: #0F0; //red
+
+@import "../lib/twitter-bootstrap/scss/bootstrap.scss";
+
+nav.navbar {
+    background: $primary;
+}
