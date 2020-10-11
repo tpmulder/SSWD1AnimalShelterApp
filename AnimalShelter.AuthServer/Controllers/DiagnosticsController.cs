@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AnimalShelter.AuthServer.Attributes;
-using AnimalShelter.AuthServer.Models.Diagnostics;
+using AnimalShelter.AuthServer.Models.ViewModels.Diagnostics;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

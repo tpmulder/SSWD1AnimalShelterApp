@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using AnimalShelter.AuthServer.Attributes;
-using AnimalShelter.AuthServer.Models.Grants;
+using AnimalShelter.AuthServer.Models.ViewModels.Grants;
 
 namespace AnimalShelter.AuthServer.Controllers
 {

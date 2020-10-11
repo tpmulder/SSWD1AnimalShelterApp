@@ -68,8 +68,9 @@ namespace AnimalShelter.Client.Public
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

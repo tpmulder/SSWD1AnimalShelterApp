@@ -26,7 +26,9 @@ namespace AnimalShelter.AuthServer.Configuration
             new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
+                new IdentityResource("Shelter", new List<string> { "shelter" }),
+                new IdentityResource("AnimalType", new List<string> { "animaltype" }),
             };
 
         public IEnumerable<ApiResource> Apis =>
@@ -64,7 +66,7 @@ namespace AnimalShelter.AuthServer.Configuration
             new List<TestUser> {
                 new TestUser
                 {
-                    SubjectId = "818727",
+                    SubjectId = "38d80e35-0789-4aca-97d6-fb096e3367b7",
                     Username = "alice",
                     Password = "alice",
                     Claims =
@@ -80,7 +82,7 @@ namespace AnimalShelter.AuthServer.Configuration
                 },
                 new TestUser
                 {
-                    SubjectId = "88421113",
+                    SubjectId = "38d80e35-0789-4aca-97d6-fb096e3367b7",
                     Username = "bob",
                     Password = "bob",
                     Claims =

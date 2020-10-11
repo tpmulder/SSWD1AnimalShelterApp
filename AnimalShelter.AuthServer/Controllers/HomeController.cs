@@ -1,5 +1,5 @@
 using AnimalShelter.AuthServer.Attributes;
-using AnimalShelter.AuthServer.Models.Error;
+using AnimalShelter.AuthServer.Models.ViewModels.Error;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;

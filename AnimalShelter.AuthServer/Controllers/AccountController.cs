@@ -1,19 +1,20 @@
-using AnimalShelter.AuthServer.Attributes;
+﻿using AnimalShelter.AuthServer.Attributes;
 using AnimalShelter.AuthServer.Configuration.Options;
 using AnimalShelter.AuthServer.Extensions;
-using AnimalShelter.AuthServer.Models.Account;
-using AnimalShelter.AuthServer.Models.Account.InputModels;
+using AnimalShelter.AuthServer.Models.ViewModels.Account;
+using AnimalShelter.AuthServer.Models.ViewModels.Account.InputModels;
+using AnimalShelter.Core.Constants;
+using AnimalShelter.Core.Models.Identity;
 using IdentityModel;
-using IdentityServer4;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
@@ -22,16 +23,12 @@ using System.Threading.Tasks;
 
 namespace AnimalShelter.AuthServer.Controllers
 {
-    /// <summary>
-    /// This sample controller implements a typical login/logout/provision workflow for local and external accounts.
-    /// The login service encapsulates the interactions with the user data store. This data store is in-memory only and cannot be used for production!
-    /// The interaction service provides a way for the UI to communicate with identityserver for validation and context retrieval
-    /// </summary>
     [SecurityHeaders]
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly TestUserStore _users;
+        private readonly UserManager<ASUser> _userManager;
+        private readonly SignInManager<ASUser> _signInManager;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -39,14 +36,16 @@ namespace AnimalShelter.AuthServer.Controllers
         private readonly AccountOptions _accountOptions;
 
         public AccountController(
+            UserManager<ASUser> userManager,
+            SignInManager<ASUser> signInManager,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
-            TestUserStore users,
             IOptions<AccountOptions> accountOptions)
         {
-            _users = users;
+            _userManager = userManager;
+            _signInManager = signInManager;
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
@@ -111,31 +110,12 @@ namespace AnimalShelter.AuthServer.Controllers
 
             if (ModelState.IsValid)
             {
-                // validate username/password against in-memory store
-                if (_users.ValidateCredentials(model.Username, model.Password))
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                if (result.Succeeded)
                 {
-                    var user = _users.FindByUsername(model.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username, clientId: context?.Client.ClientId));
-
-                    // only set explicit expiration here if user chooses "remember me". 
-                    // otherwise we rely upon expiration configured in cookie middleware.
-                    AuthenticationProperties props = null;
-                    if (_accountOptions.AllowRememberLogin && model.RememberLogin)
-                    {
-                        props = new AuthenticationProperties
-                        {
-                            IsPersistent = true,
-                            ExpiresUtc = DateTimeOffset.UtcNow.Add(_accountOptions.RememberMeLoginDuration)
-                        };
-                    };
-
-                    // issue authentication cookie with subject ID and username
-                    var isuser = new IdentityServerUser(user.SubjectId)
-                    {
-                        DisplayName = user.Username
-                    };
-
-                    await HttpContext.SignInAsync(isuser, props);
+                    var user = await _userManager.FindByNameAsync(model.Username);
+                    var z = user.Id.ToString();
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client.ClientId));
 
                     if (context != null)
                     {
@@ -167,7 +147,7 @@ namespace AnimalShelter.AuthServer.Controllers
                 }
 
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId:context?.Client.ClientId));
-                ModelState.AddModelError(string.Empty, _accountOptions.InvalidCredentialsErrorMessage);
+                ModelState.AddModelError(string.Empty, ErrorMessages.InvalidCredentialsErrorMessage);
             }
 
             // something went wrong, show form with error
@@ -208,7 +188,7 @@ namespace AnimalShelter.AuthServer.Controllers
             if (User?.Identity.IsAuthenticated == true)
             {
                 // delete local authentication cookie
-                await HttpContext.SignOutAsync();
+                await _signInManager.SignOutAsync();
 
                 // raise the logout event
                 await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));

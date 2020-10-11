@@ -8,14 +8,12 @@ using System.Threading.Tasks;
 namespace AnimalShelter.Api.Controllers.V1
 {
     [ApiController]
-    [Route("identity")]
+    [Route("v1/[controller]")]
     [Authorize]
     public class AccountController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Get()
-        {
-            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
-        }
+        public IActionResult Get() =>
+            new JsonResult(User.Claims.Select(e => new { value = e.Value, type = e.Type }));
     }
 }

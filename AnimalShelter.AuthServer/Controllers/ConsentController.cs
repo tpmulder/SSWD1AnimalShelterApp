@@ -11,14 +11,13 @@ using IdentityServer4.Validation;
 using System.Collections.Generic;
 using System;
 using AnimalShelter.AuthServer.Attributes;
-using AnimalShelter.AuthServer.Models.Consent.InputModels;
+using AnimalShelter.AuthServer.Models.ViewModels.Consent.InputModels;
 using AnimalShelter.AuthServer.Extensions;
-using AnimalShelter.AuthServer.Models.Consent;
+using AnimalShelter.AuthServer.Models.ViewModels.Consent;
 using AnimalShelter.AuthServer.Configuration.Options;
 using Microsoft.Extensions.Options;
-using IdentityServer4;
 
-namespace IdentityServerHost.Quickstart.UI
+namespace AnimalShelter.AuthServer.Controllers
 {
     /// <summary>
     /// This controller processes the consent UI
@@ -221,7 +220,7 @@ namespace IdentityServerHost.Quickstart.UI
             return vm;
         }
 
-        private static ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
+        private ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
         {
             return new ScopeViewModel
             {
@@ -237,7 +236,7 @@ namespace IdentityServerHost.Quickstart.UI
         public ScopeViewModel CreateScopeViewModel(ParsedScopeValue parsedScopeValue, ApiScope apiScope, bool check)
         {
             var displayName = apiScope.DisplayName ?? apiScope.Name;
-            if (!string.IsNullOrWhiteSpace(parsedScopeValue.ParsedParameter))
+            if (!String.IsNullOrWhiteSpace(parsedScopeValue.ParsedParameter))
             {
                 displayName += ":" + parsedScopeValue.ParsedParameter;
             }
@@ -257,7 +256,7 @@ namespace IdentityServerHost.Quickstart.UI
         {
             return new ScopeViewModel
             {
-                Value = IdentityServerConstants.StandardScopes.OfflineAccess,
+                Value = IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess,
                 DisplayName = _consentOptions.OfflineAccessDisplayName,
                 Description = _consentOptions.OfflineAccessDescription,
                 Emphasize = true,

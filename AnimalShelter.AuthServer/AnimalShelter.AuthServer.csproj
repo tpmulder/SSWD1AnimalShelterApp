@@ -10,6 +10,19 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="Views\Account\AccessDenied.cshtml" />
+    <None Include="Views\Account\LoggedOut.cshtml" />
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Account\Logout.cshtml" />
+    <None Include="Views\Consent\Index.cshtml" />
+    <None Include="Views\Device\Success.cshtml" />
+    <None Include="Views\Device\UserCodeCapture.cshtml" />
+    <None Include="Views\Device\UserCodeConfirmation.cshtml" />
+    <None Include="Views\Diagnostics\Index.cshtml" />
+    <None Include="Views\Grants\Index.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +39,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AnimalShelter.Core\AnimalShelter.Core.csproj" />
     <ProjectReference Include="..\AnimalShelter.Infrastructure.Common\AnimalShelter.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\AnimalShelter.Infrastructure.Data\AnimalShelter.Infrastructure.Data.csproj" />
   </ItemGroup>
 
 </Project>

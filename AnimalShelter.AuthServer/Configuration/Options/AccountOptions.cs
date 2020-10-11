@@ -10,7 +10,5 @@ namespace AnimalShelter.AuthServer.Configuration.Options
 
         public bool ShowLogoutPrompt = true;
         public bool AutomaticRedirectAfterSignOut = false;
-
-        public string InvalidCredentialsErrorMessage = "Invalid username or password";
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using AnimalShelter.AuthServer.Models.Account;
+using AnimalShelter.AuthServer.Models.ViewModels.Account;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
 
